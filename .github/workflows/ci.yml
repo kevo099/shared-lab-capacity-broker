@@ -74,12 +74,16 @@ jobs:
         run: python scripts/check_archives.py
 
       - name: Install wheel into a clean environment
+        env:
+          PYTHONPATH: ""
         run: |
           python -m venv "$RUNNER_TEMP/wheel-smoke"
           "$RUNNER_TEMP/wheel-smoke/bin/python" -m pip install --no-deps dist/*.whl
 
       - name: Smoke installed wheel outside checkout
         working-directory: ${{ runner.temp }}
+        env:
+          PYTHONPATH: ""
         run: |
           "$RUNNER_TEMP/wheel-smoke/bin/lab-broker" overview >/dev/null
           "$RUNNER_TEMP/wheel-smoke/bin/lab-broker" plan security-range >/dev/null
