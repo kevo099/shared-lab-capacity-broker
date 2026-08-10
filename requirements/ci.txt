@@ -2,7 +2,7 @@
 ast-serialize==0.8.0
 attrs==26.1.0
 build==1.3.0
-jsonschema==4.25.1
+jsonschema==4.26.0
 jsonschema-specifications==2025.9.1
 librt==0.15.0
 mypy==2.3.0
