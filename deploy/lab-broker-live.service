@@ -1,0 +1,55 @@
+[Unit]
+Description=Shared Lab Capacity Broker sanitized live read-only view
+Documentation=file:/opt/shared-lab-capacity-broker/docs/LIVE-READ-ONLY.md
+After=local-fs.target
+
+[Service]
+Type=simple
+User=lab-broker
+Group=lab-broker
+WorkingDirectory=/opt/shared-lab-capacity-broker
+Environment=PYTHONPATH=/opt/shared-lab-capacity-broker/src
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStartPre=/usr/bin/test -r /opt/shared-lab-capacity-broker/REVISION
+ExecStartPre=/usr/bin/test ! -w /opt/shared-lab-capacity-broker/REVISION
+ExecStartPre=/usr/bin/test ! -w /opt/shared-lab-capacity-broker/src/lab_broker/web.py
+ExecStartPre=/usr/bin/test ! -w /opt/shared-lab-capacity-broker/src/lab_broker/ui/static/app.js
+ExecStartPre=/usr/bin/test ! -w /etc/lab-broker/catalog.json
+ExecStart=/usr/bin/python3 -m lab_broker serve --bind 127.0.0.1 --port 8087 --catalog-file /etc/lab-broker/catalog.json --snapshot-file /var/lib/lab-broker/live-snapshot.json
+Restart=on-failure
+RestartSec=3s
+TimeoutStartSec=15s
+TimeoutStopSec=15s
+UMask=0027
+TasksMax=32
+MemoryMax=192M
+LimitNOFILE=256
+
+NoNewPrivileges=yes
+CapabilityBoundingSet=
+AmbientCapabilities=
+PrivateDevices=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadOnlyPaths=/opt/shared-lab-capacity-broker /etc/lab-broker
+ProtectClock=yes
+ProtectControlGroups=yes
+ProtectKernelLogs=yes
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+ProtectHostname=yes
+ProtectProc=invisible
+ProcSubset=pid
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+RestrictNamespaces=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+SystemCallArchitectures=native
+IPAddressDeny=any
+IPAddressAllow=localhost
+
+[Install]
+WantedBy=multi-user.target

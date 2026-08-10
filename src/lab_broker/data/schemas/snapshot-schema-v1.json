@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:shared-lab-capacity-broker:snapshot:v1",
+  "title": "Shared Lab Capacity Broker complete snapshot v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "revision",
+    "generated_at",
+    "demo_evaluation_time",
+    "observed_at",
+    "collected_at",
+    "source_observed_at",
+    "nodes",
+    "guests",
+    "networks",
+    "controllers",
+    "backups",
+    "leases",
+    "reservations",
+    "catalog_digest",
+    "binding_digest"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "revision": {"$ref": "#/$defs/identifier"},
+    "generated_at": {"$ref": "#/$defs/timestamp"},
+    "demo_evaluation_time": {"$ref": "#/$defs/timestamp"},
+    "observed_at": {"$ref": "#/$defs/timestamp"},
+    "collected_at": {"$ref": "#/$defs/timestamp"},
+    "source_observed_at": {
+      "type": "object",
+      "maxProperties": 32,
+      "propertyNames": {"$ref": "#/$defs/identifier"},
+      "additionalProperties": {"$ref": "#/$defs/timestamp"}
+    },
+    "nodes": {"type": "array", "maxItems": 32, "items": {"$ref": "#/$defs/node"}},
+    "guests": {"type": "array", "maxItems": 512, "items": {"$ref": "#/$defs/guest"}},
+    "networks": {
+      "type": "object",
+      "maxProperties": 128,
+      "propertyNames": {"$ref": "#/$defs/identifier"},
+      "additionalProperties": {"type": "boolean"}
+    },
+    "controllers": {
+      "type": "object",
+      "maxProperties": 128,
+      "propertyNames": {"$ref": "#/$defs/identifier"},
+      "additionalProperties": {"type": "boolean"}
+    },
+    "backups": {"type": "array", "maxItems": 256, "items": {"$ref": "#/$defs/backup"}},
+    "leases": {"type": "array", "maxItems": 256, "items": {"$ref": "#/$defs/lease"}},
+    "reservations": {"type": "array", "maxItems": 256, "items": {"$ref": "#/$defs/reservation"}},
+    "catalog_digest": {"$ref": "#/$defs/digest"},
+    "binding_digest": {"$ref": "#/$defs/digest"}
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[a-z0-9][a-z0-9-]{0,63}$"
+    },
+    "identifierList": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/identifier"}
+    },
+    "timestamp": {
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 40,
+      "pattern": "Z$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "minLength": 71,
+      "maxLength": 71
+    },
+    "nonnegativeInteger": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9223372036854775807
+    },
+    "positiveInteger": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9223372036854775807
+    },
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "memory_total_bytes", "memory_available_bytes",
+        "host_reserve_bytes", "ksm_shared_bytes", "swap_in_bytes_per_second",
+        "root_free_bytes"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/identifier"},
+        "memory_total_bytes": {"$ref": "#/$defs/positiveInteger"},
+        "memory_available_bytes": {"$ref": "#/$defs/nonnegativeInteger"},
+        "host_reserve_bytes": {"$ref": "#/$defs/nonnegativeInteger"},
+        "ksm_shared_bytes": {"$ref": "#/$defs/nonnegativeInteger"},
+        "swap_in_bytes_per_second": {
+          "oneOf": [
+            {"$ref": "#/$defs/nonnegativeInteger"},
+            {"type": "null"}
+          ]
+        },
+        "root_free_bytes": {"$ref": "#/$defs/nonnegativeInteger"}
+      }
+    },
+    "guest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "node", "configured_memory_bytes", "observed_memory_bytes",
+        "state", "owner_environment", "core_protected", "gpu_affine", "locked"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/identifier"},
+        "node": {"$ref": "#/$defs/identifier"},
+        "configured_memory_bytes": {"$ref": "#/$defs/positiveInteger"},
+        "observed_memory_bytes": {"$ref": "#/$defs/nonnegativeInteger"},
+        "state": {"enum": ["stopped", "starting", "running", "stopping", "degraded", "unknown"]},
+        "owner_environment": {"$ref": "#/$defs/identifier"},
+        "core_protected": {"type": "boolean"},
+        "gpu_affine": {"type": "boolean"},
+        "locked": {"type": "boolean"}
+      }
+    },
+    "backup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["environment_id", "state", "age_seconds"],
+      "properties": {
+        "environment_id": {"$ref": "#/$defs/identifier"},
+        "state": {"enum": ["fresh", "stale", "unknown", "not_required"]},
+        "age_seconds": {
+          "oneOf": [
+            {"$ref": "#/$defs/nonnegativeInteger"},
+            {"type": "null"}
+          ]
+        }
+      }
+    },
+    "lease": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "environment_id", "class", "state", "expires_at"],
+      "properties": {
+        "id": {"$ref": "#/$defs/identifier"},
+        "environment_id": {"$ref": "#/$defs/identifier"},
+        "class": {"enum": ["exam", "application", "core"]},
+        "state": {
+          "enum": [
+            "reserved", "activating", "active", "cleanup_due", "releasing",
+            "cleanup_failed", "released", "cancelled", "expired_unstarted"
+          ]
+        },
+        "expires_at": {"$ref": "#/$defs/timestamp"}
+      }
+    },
+    "reservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["environment_id", "node", "reserved_bytes", "member_ids", "state"],
+      "properties": {
+        "environment_id": {"$ref": "#/$defs/identifier"},
+        "node": {"$ref": "#/$defs/identifier"},
+        "reserved_bytes": {"$ref": "#/$defs/positiveInteger"},
+        "member_ids": {"$ref": "#/$defs/identifierList"},
+        "state": {
+          "enum": [
+            "reserved", "activating", "active", "cleanup_due", "releasing",
+            "cleanup_failed", "released", "cancelled"
+          ]
+        }
+      }
+    }
+  }
+}

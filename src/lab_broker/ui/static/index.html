@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Read-only shared lab capacity planner">
+  <title>Lab Capacity Console</title>
+  <link rel="icon" href="static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="static/app.css">
+  <script src="static/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div class="app-shell">
+    <aside class="side-rail" aria-label="Primary navigation">
+      <div class="product-mark" aria-label="Lab Capacity Console">
+        <span class="product-glyph" aria-hidden="true">LC</span>
+        <span>
+          <strong>Lab Capacity</strong>
+          <small>Operations console</small>
+        </span>
+      </div>
+      <nav class="primary-nav">
+        <a class="nav-item nav-item-active" href="#overview" aria-current="page">
+          <span aria-hidden="true">▦</span> Overview
+        </a>
+        <a class="nav-item" href="#environments"><span aria-hidden="true">◇</span> Environments</a>
+        <a class="nav-item" href="#nodes"><span aria-hidden="true">▤</span> Capacity</a>
+        <a class="nav-item" href="#plan-detail"><span aria-hidden="true">≡</span> Plan evidence</a>
+      </nav>
+      <div class="rail-foot">
+        <span class="mode-dot" aria-hidden="true"></span>
+        <span id="mode-label">Synthetic fixture mode</span>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="command-bar">
+        <button class="rail-toggle" id="rail-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+        <div class="command-title">
+          <span>Capacity broker</span>
+          <strong>Environment overview</strong>
+        </div>
+        <label class="search-box" for="environment-filter">
+          <span aria-hidden="true">⌕</span>
+          <span class="visually-hidden">Filter environments</span>
+          <input id="environment-filter" type="search" autocomplete="off" placeholder="Filter environments">
+        </label>
+        <span class="top-badge">READ ONLY</span>
+      </header>
+
+      <main id="main-content" tabindex="-1">
+        <section class="safety-banner" aria-labelledby="safety-title">
+          <span class="banner-icon" aria-hidden="true">i</span>
+          <div>
+            <h1 id="safety-title">Read-only planning workspace</h1>
+            <p id="safety-copy">This console cannot start, stop, reserve, or release a workload. Unknown or stale evidence always fails closed.</p>
+          </div>
+          <span id="snapshot-badge" class="status-pill status-loading">Loading evidence</span>
+        </section>
+
+        <p id="page-status" class="visually-hidden" role="status" aria-live="polite">Loading capacity data.</p>
+
+        <section id="overview" aria-labelledby="overview-heading">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Resource health</p>
+              <h2 id="overview-heading">Operational summary</h2>
+            </div>
+            <p id="snapshot-meta" class="section-meta">Waiting for snapshot…</p>
+          </div>
+          <div class="summary-grid">
+            <article class="metric-card metric-safe">
+              <div class="metric-top"><span>Safe now</span><span class="metric-icon" aria-hidden="true">✓</span></div>
+              <strong id="safe-count">—</strong>
+              <small>Conservative envelope passes</small>
+            </article>
+            <article class="metric-card metric-donor">
+              <div class="metric-top"><span>Need donors</span><span class="metric-icon" aria-hidden="true">⇄</span></div>
+              <strong id="donor-count">—</strong>
+              <small>Reviewed release plan required</small>
+            </article>
+            <article class="metric-card metric-attention">
+              <div class="metric-top"><span>Blocked / unknown</span><span class="metric-icon" aria-hidden="true">!</span></div>
+              <strong id="blocked-count">—</strong>
+              <small>No action should be taken</small>
+            </article>
+            <article class="metric-card metric-slot">
+              <div class="metric-top"><span>Single exam slot</span><span class="metric-icon" aria-hidden="true">1</span></div>
+              <strong id="exam-slot">—</strong>
+              <small id="exam-slot-detail">Checking global semaphore</small>
+            </article>
+          </div>
+        </section>
+
+        <section id="nodes" aria-labelledby="nodes-heading">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Two-envelope model</p>
+              <h2 id="nodes-heading">Node capacity</h2>
+            </div>
+            <p class="section-meta">KSM and swap are diagnostic only, never guaranteed capacity.</p>
+          </div>
+          <div id="node-grid" class="node-grid" aria-live="polite"></div>
+        </section>
+
+        <section id="environments" aria-labelledby="environment-heading">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Coexistence and readiness</p>
+              <h2 id="environment-heading">Environment matrix</h2>
+            </div>
+            <p class="section-meta">Select Inspect plan for deterministic evidence and proposed actions.</p>
+          </div>
+          <div class="table-shell">
+            <table>
+              <caption class="visually-hidden">Managed environments, current state, feasibility, coexistence, and reviewed donors</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Environment</th>
+                  <th scope="col">State</th>
+                  <th scope="col">Can start?</th>
+                  <th scope="col">Coexists with</th>
+                  <th scope="col">Required donors</th>
+                  <th scope="col"><span class="visually-hidden">Plan details</span></th>
+                </tr>
+              </thead>
+              <tbody id="environment-rows">
+                <tr><td colspan="6" class="empty-state">Loading the deterministic matrix…</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p id="filter-empty" class="empty-state hidden">No environment matches this filter.</p>
+        </section>
+
+        <section id="plan-detail" class="plan-panel" aria-labelledby="plan-heading">
+          <div class="plan-panel-head">
+            <div>
+              <p class="eyebrow">Read-only planner</p>
+              <h2 id="plan-heading">Plan evidence</h2>
+            </div>
+            <span class="top-badge">NO EXECUTOR INSTALLED</span>
+          </div>
+          <div id="plan-content" class="plan-placeholder">
+            <span class="placeholder-glyph" aria-hidden="true">◇</span>
+            <h3>Select an environment</h3>
+            <p>The planner will show capacity before and after, hard gates, coexistence, reviewed donors, and the immutable plan digest.</p>
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        <span>Shared Lab Capacity Broker</span>
+        <span id="release-mode">Deterministic read-only release · zero infrastructure mutation paths</span>
+      </footer>
+    </div>
+  </div>
+</body>
+</html>

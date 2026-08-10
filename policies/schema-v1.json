@@ -1,0 +1,182 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:shared-lab-capacity-broker:policy:v1",
+  "title": "Shared Lab Capacity Broker policy catalog v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "canonical_profile",
+    "max_snapshot_age_seconds",
+    "max_source_skew_seconds",
+    "maximum_swap_in_bytes_per_second",
+    "required_sources",
+    "environments"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "canonical_profile": {"const": "broker-cjson-v1"},
+    "max_snapshot_age_seconds": {"type": "integer", "minimum": 1, "maximum": 3600},
+    "max_source_skew_seconds": {"type": "integer", "minimum": 0, "maximum": 600},
+    "maximum_swap_in_bytes_per_second": {"$ref": "#/$defs/nonnegativeInteger"},
+    "required_sources": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/identifier"}
+    },
+    "environments": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 128,
+      "items": {"$ref": "#/$defs/environment"}
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[a-z0-9][a-z0-9-]{0,63}$"
+    },
+    "identifierList": {
+      "type": "array",
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/identifier"}
+    },
+    "nonnegativeInteger": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9223372036854775807
+    },
+    "positiveInteger": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9223372036854775807
+    },
+    "donorSet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "donors",
+        "adapter",
+        "requires_fresh_backup",
+        "service_impact",
+        "restore_seconds",
+        "dependencies"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/identifier"},
+        "donors": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 16,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/identifier"}
+        },
+        "adapter": {"$ref": "#/$defs/identifier"},
+        "requires_fresh_backup": {"type": "boolean"},
+        "service_impact": {"type": "integer", "minimum": 0, "maximum": 100},
+        "restore_seconds": {"type": "integer", "minimum": 0, "maximum": 86400},
+        "dependencies": {"type": "integer", "minimum": 0, "maximum": 100}
+      }
+    },
+    "placement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "node",
+        "reserved_memory_bytes",
+        "minimum_root_free_bytes",
+        "cohort"
+      ],
+      "properties": {
+        "node": {"$ref": "#/$defs/identifier"},
+        "reserved_memory_bytes": {"$ref": "#/$defs/positiveInteger"},
+        "minimum_root_free_bytes": {"$ref": "#/$defs/nonnegativeInteger"},
+        "cohort": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/identifier"}
+        }
+      }
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "display_name",
+        "class",
+        "user_visible",
+        "host_affinity",
+        "reserved_memory_bytes",
+        "minimum_root_free_bytes",
+        "cohort",
+        "exclusive_with",
+        "shares_cohort_with",
+        "required_networks",
+        "can_donate_to",
+        "coexists_with",
+        "controller",
+        "cleanup_adapter",
+        "default_lease_seconds",
+        "maximum_lease_seconds",
+        "backup_required",
+        "donor_sets"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/identifier"},
+        "display_name": {"type": "string", "minLength": 1, "maxLength": 100},
+        "class": {"enum": ["exam", "application", "core"]},
+        "user_visible": {"type": "boolean"},
+        "host_affinity": {"$ref": "#/$defs/identifier"},
+        "reserved_memory_bytes": {"$ref": "#/$defs/positiveInteger"},
+        "minimum_root_free_bytes": {"$ref": "#/$defs/nonnegativeInteger"},
+        "cohort": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/identifier"}
+        },
+        "placements": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "items": {"$ref": "#/$defs/placement"}
+        },
+        "exclusive_with": {"$ref": "#/$defs/identifierList"},
+        "shares_cohort_with": {"$ref": "#/$defs/identifierList"},
+        "required_networks": {
+          "type": "array",
+          "maxItems": 16,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/identifier"}
+        },
+        "can_donate_to": {
+          "type": "array",
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/identifier"}
+        },
+        "coexists_with": {"$ref": "#/$defs/identifierList"},
+        "controller": {"$ref": "#/$defs/identifier"},
+        "cleanup_adapter": {"$ref": "#/$defs/identifier"},
+        "default_lease_seconds": {"type": "integer", "minimum": 60, "maximum": 86400},
+        "maximum_lease_seconds": {"type": "integer", "minimum": 60, "maximum": 172800},
+        "backup_required": {"type": "boolean"},
+        "donor_sets": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {"$ref": "#/$defs/donorSet"}
+        }
+      }
+    }
+  }
+}

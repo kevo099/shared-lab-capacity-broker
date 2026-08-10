@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:shared-lab-capacity-broker:live-bindings:v1",
+  "title": "Private live Proxmox bindings",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "canonical_profile", "nodes", "guests"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "canonical_profile": {"const": "broker-cjson-v1"},
+    "nodes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "items": {"$ref": "#/$defs/node"}
+    },
+    "guests": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 512,
+      "items": {"$ref": "#/$defs/guest"}
+    }
+  },
+  "$defs": {
+    "semanticId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,63}$"
+    },
+    "sourceName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+    },
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["alias", "source_node", "host_reserve_bytes"],
+      "properties": {
+        "alias": {"$ref": "#/$defs/semanticId"},
+        "source_node": {"$ref": "#/$defs/sourceName"},
+        "host_reserve_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9223372036854775807
+        }
+      }
+    },
+    "guest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "alias",
+        "node_alias",
+        "source_kind",
+        "source_id",
+        "owner_environments",
+        "core_protected",
+        "gpu_affine"
+      ],
+      "properties": {
+        "alias": {"$ref": "#/$defs/semanticId"},
+        "node_alias": {"$ref": "#/$defs/semanticId"},
+        "source_kind": {"enum": ["qemu", "lxc"]},
+        "source_id": {"type": "integer", "minimum": 1, "maximum": 999999999},
+        "owner_environments": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/semanticId"}
+        },
+        "core_protected": {"type": "boolean"},
+        "gpu_affine": {"type": "boolean"}
+      }
+    }
+  }
+}

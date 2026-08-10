@@ -1,0 +1,50 @@
+[Unit]
+Description=Shared Lab Capacity Broker synthetic read-only demo
+Documentation=file:/opt/shared-lab-capacity-broker/README.md
+After=local-fs.target
+
+[Service]
+Type=simple
+DynamicUser=yes
+WorkingDirectory=/opt/shared-lab-capacity-broker
+Environment=PYTHONPATH=/opt/shared-lab-capacity-broker/src
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStartPre=/usr/bin/test -r /opt/shared-lab-capacity-broker/REVISION
+ExecStartPre=/usr/bin/test ! -w /opt/shared-lab-capacity-broker/REVISION
+ExecStartPre=/usr/bin/test ! -w /opt/shared-lab-capacity-broker/src/lab_broker/web.py
+ExecStartPre=/usr/bin/test ! -w /opt/shared-lab-capacity-broker/src/lab_broker/ui/static/app.js
+ExecStart=/usr/bin/python3 -m lab_broker serve --bind 127.0.0.1 --port 8087
+Restart=on-failure
+RestartSec=3s
+TimeoutStartSec=15s
+TimeoutStopSec=15s
+UMask=0077
+
+NoNewPrivileges=yes
+CapabilityBoundingSet=
+AmbientCapabilities=
+PrivateDevices=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadOnlyPaths=/opt/shared-lab-capacity-broker
+ProtectClock=yes
+ProtectControlGroups=yes
+ProtectKernelLogs=yes
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+ProtectHostname=yes
+ProtectProc=invisible
+ProcSubset=pid
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+RestrictNamespaces=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+SystemCallArchitectures=native
+IPAddressDeny=any
+IPAddressAllow=localhost
+
+[Install]
+WantedBy=multi-user.target

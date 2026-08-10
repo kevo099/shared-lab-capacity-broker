@@ -1,0 +1,86 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release-gates:
+    name: Python ${{ matrix.python-version }} release gates
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12", "3.13", "3.14"]
+    env:
+      PYTHONPATH: src
+      PYTHONDONTWRITEBYTECODE: "1"
+      PIP_DISABLE_PIP_VERSION_CHECK: "1"
+      SOURCE_DATE_EPOCH: "1767225600"
+    steps:
+      - name: Check out source without persisted credentials
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.4.0
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: ""
+
+      - name: Install exact test and build tool closure
+        run: |
+          python -m pip install --only-binary=:all: --no-deps -r requirements/ci.txt
+          python -m pip check
+
+      - name: Compile source
+        run: python -m compileall -q src tests scripts
+
+      - name: Enforce formatting and lint
+        run: |
+          ruff format --check src tests scripts
+          ruff check src tests scripts
+
+      - name: Enforce strict source typing
+        run: mypy
+
+      - name: Run contracts and tests
+        run: python -m unittest discover -v
+
+      - name: Scan the complete public tree
+        run: python scripts/check_public_tree.py .
+
+      - name: Exercise source CLI
+        run: |
+          python -m lab_broker overview >/dev/null
+          python -m lab_broker plan security-range >/dev/null
+
+      - name: Verify systemd sandbox artifacts
+        run: systemd-analyze verify deploy/lab-broker-live.service deploy/lab-broker-synthetic.service
+
+      - name: Build wheel and source archive
+        run: python -m build
+
+      - name: Verify archive contents and metadata
+        run: python scripts/check_archives.py
+
+      - name: Install wheel into a clean environment
+        run: |
+          python -m venv "$RUNNER_TEMP/wheel-smoke"
+          "$RUNNER_TEMP/wheel-smoke/bin/python" -m pip install --no-deps dist/*.whl
+
+      - name: Smoke installed wheel outside checkout
+        working-directory: ${{ runner.temp }}
+        run: |
+          "$RUNNER_TEMP/wheel-smoke/bin/lab-broker" overview >/dev/null
+          "$RUNNER_TEMP/wheel-smoke/bin/lab-broker" plan security-range >/dev/null
+          "$RUNNER_TEMP/wheel-smoke/bin/python" "$GITHUB_WORKSPACE/scripts/smoke_installed_wheel.py"

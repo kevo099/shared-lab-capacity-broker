@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "revision": "fictional-snapshot-1",
+  "generated_at": "2035-06-15T11:59:55Z",
+  "demo_evaluation_time": "2035-06-15T12:00:00Z",
+  "observed_at": "2035-06-15T11:59:51Z",
+  "collected_at": "2035-06-15T11:59:54Z",
+  "source_observed_at": {
+    "backups": "2035-06-15T11:59:44Z",
+    "controllers": "2035-06-15T11:59:47Z",
+    "inventory": "2035-06-15T11:59:51Z",
+    "telemetry": "2035-06-15T11:59:52Z"
+  },
+  "nodes": [
+    {
+      "id": "node-cobalt",
+      "memory_total_bytes": 85899345920,
+      "memory_available_bytes": 33285996544,
+      "host_reserve_bytes": 11811160064,
+      "ksm_shared_bytes": 5368709120,
+      "swap_in_bytes_per_second": 0,
+      "root_free_bytes": 31138512896
+    },
+    {
+      "id": "node-amber",
+      "memory_total_bytes": 77309411328,
+      "memory_available_bytes": 28991029248,
+      "host_reserve_bytes": 9663676416,
+      "ksm_shared_bytes": 2147483648,
+      "swap_in_bytes_per_second": 0,
+      "root_free_bytes": 26843545600
+    }
+  ],
+  "guests": [
+    {"id": "foundation-router", "node": "node-cobalt", "configured_memory_bytes": 3221225472, "observed_memory_bytes": 2147483648, "state": "running", "owner_environment": "foundation", "core_protected": true, "gpu_affine": false, "locked": false},
+    {"id": "foundation-metrics", "node": "node-cobalt", "configured_memory_bytes": 4294967296, "observed_memory_bytes": 3221225472, "state": "running", "owner_environment": "foundation", "core_protected": true, "gpu_affine": false, "locked": false},
+    {"id": "batch-runner", "node": "node-cobalt", "configured_memory_bytes": 9663676416, "observed_memory_bytes": 4294967296, "state": "running", "owner_environment": "batch-orchestrator", "core_protected": false, "gpu_affine": false, "locked": false},
+    {"id": "archive-worker", "node": "node-cobalt", "configured_memory_bytes": 7516192768, "observed_memory_bytes": 3221225472, "state": "running", "owner_environment": "archive-indexer", "core_protected": false, "gpu_affine": false, "locked": false},
+    {"id": "vision-worker", "node": "node-cobalt", "configured_memory_bytes": 15032385536, "observed_memory_bytes": 5368709120, "state": "running", "owner_environment": "vision-workbench", "core_protected": false, "gpu_affine": false, "locked": false},
+    {"id": "security-gateway", "node": "node-cobalt", "configured_memory_bytes": 7516192768, "observed_memory_bytes": 0, "state": "stopped", "owner_environment": "security-range", "core_protected": false, "gpu_affine": false, "locked": false},
+    {"id": "security-directory", "node": "node-cobalt", "configured_memory_bytes": 8589934592, "observed_memory_bytes": 0, "state": "stopped", "owner_environment": "security-range", "core_protected": false, "gpu_affine": false, "locked": false},
+    {"id": "security-client-one", "node": "node-cobalt", "configured_memory_bytes": 6442450944, "observed_memory_bytes": 0, "state": "stopped", "owner_environment": "security-range", "core_protected": false, "gpu_affine": false, "locked": false},
+    {"id": "security-client-two", "node": "node-cobalt", "configured_memory_bytes": 6442450944, "observed_memory_bytes": 0, "state": "stopped", "owner_environment": "security-range", "core_protected": false, "gpu_affine": false, "locked": false},
+    {"id": "security-target-one", "node": "node-cobalt", "configured_memory_bytes": 8589934592, "observed_memory_bytes": 0, "state": "stopped", "owner_environment": "security-range", "core_protected": false, "gpu_affine": false, "locked": false},
+    {"id": "security-target-two", "node": "node-amber", "configured_memory_bytes": 4294967296, "observed_memory_bytes": 0, "state": "stopped", "owner_environment": "security-range", "core_protected": false, "gpu_affine": false, "locked": false},
+    {"id": "security-analyst", "node": "node-amber", "configured_memory_bytes": 4294967296, "observed_memory_bytes": 0, "state": "stopped", "owner_environment": "security-range", "core_protected": false, "gpu_affine": false, "locked": false},
+    {"id": "desktop-directory", "node": "node-cobalt", "configured_memory_bytes": 10737418240, "observed_memory_bytes": 0, "state": "stopped", "owner_environment": "desktop-range", "core_protected": false, "gpu_affine": false, "locked": false},
+    {"id": "desktop-client-one", "node": "node-cobalt", "configured_memory_bytes": 10737418240, "observed_memory_bytes": 0, "state": "stopped", "owner_environment": "desktop-range", "core_protected": false, "gpu_affine": false, "locked": false},
+    {"id": "desktop-client-two", "node": "node-cobalt", "configured_memory_bytes": 10737418240, "observed_memory_bytes": 0, "state": "stopped", "owner_environment": "desktop-range", "core_protected": false, "gpu_affine": false, "locked": false},
+    {"id": "desktop-management", "node": "node-cobalt", "configured_memory_bytes": 10737418240, "observed_memory_bytes": 0, "state": "stopped", "owner_environment": "desktop-range", "core_protected": false, "gpu_affine": false, "locked": false},
+    {"id": "desktop-utility-one", "node": "node-amber", "configured_memory_bytes": 6442450944, "observed_memory_bytes": 0, "state": "stopped", "owner_environment": "desktop-range", "core_protected": false, "gpu_affine": false, "locked": false},
+    {"id": "desktop-utility-two", "node": "node-amber", "configured_memory_bytes": 6442450944, "observed_memory_bytes": 0, "state": "stopped", "owner_environment": "desktop-range", "core_protected": false, "gpu_affine": false, "locked": false},
+    {"id": "fabric-router", "node": "node-amber", "configured_memory_bytes": 3221225472, "observed_memory_bytes": 2147483648, "state": "running", "owner_environment": "foundation", "core_protected": true, "gpu_affine": false, "locked": false},
+    {"id": "assessment-portal", "node": "node-amber", "configured_memory_bytes": 3221225472, "observed_memory_bytes": 2147483648, "state": "running", "owner_environment": "foundation", "core_protected": true, "gpu_affine": false, "locked": false},
+    {"id": "platform-toolbox", "node": "node-amber", "configured_memory_bytes": 4294967296, "observed_memory_bytes": 3221225472, "state": "running", "owner_environment": "foundation", "core_protected": true, "gpu_affine": false, "locked": false},
+    {"id": "cluster-control", "node": "node-amber", "configured_memory_bytes": 9663676416, "observed_memory_bytes": 0, "state": "stopped", "owner_environment": "cluster-blue", "core_protected": false, "gpu_affine": false, "locked": false},
+    {"id": "cluster-worker-one", "node": "node-amber", "configured_memory_bytes": 6442450944, "observed_memory_bytes": 0, "state": "stopped", "owner_environment": "cluster-blue", "core_protected": false, "gpu_affine": false, "locked": false},
+    {"id": "cluster-worker-two", "node": "node-amber", "configured_memory_bytes": 6442450944, "observed_memory_bytes": 0, "state": "stopped", "owner_environment": "cluster-blue", "core_protected": false, "gpu_affine": false, "locked": false},
+    {"id": "linux-node-one", "node": "node-amber", "configured_memory_bytes": 8589934592, "observed_memory_bytes": 0, "state": "stopped", "owner_environment": "linux-blue", "core_protected": false, "gpu_affine": false, "locked": false},
+    {"id": "linux-node-two", "node": "node-amber", "configured_memory_bytes": 8589934592, "observed_memory_bytes": 0, "state": "stopped", "owner_environment": "linux-blue", "core_protected": false, "gpu_affine": false, "locked": false},
+    {"id": "automation-controller", "node": "node-amber", "configured_memory_bytes": 5368709120, "observed_memory_bytes": 0, "state": "stopped", "owner_environment": "automation-blue", "core_protected": false, "gpu_affine": false, "locked": false},
+    {"id": "automation-target-one", "node": "node-amber", "configured_memory_bytes": 5368709120, "observed_memory_bytes": 0, "state": "stopped", "owner_environment": "automation-blue", "core_protected": false, "gpu_affine": false, "locked": false},
+    {"id": "automation-target-two", "node": "node-amber", "configured_memory_bytes": 5368709120, "observed_memory_bytes": 0, "state": "stopped", "owner_environment": "automation-blue", "core_protected": false, "gpu_affine": false, "locked": false}
+  ],
+  "networks": {
+    "assessment-fabric": true,
+    "platform-fabric": true,
+    "practice-fabric": true,
+    "range-fabric": true
+  },
+  "controllers": {
+    "automation-exam-controller": true,
+    "cluster-exam-controller": true,
+    "desktop-range-controller": true,
+    "foundation-observer": true,
+    "linux-exam-controller": true,
+    "security-range-controller": true,
+    "workspace-controller": true
+  },
+  "backups": [
+    {"environment_id": "archive-indexer", "state": "fresh", "age_seconds": 3100},
+    {"environment_id": "batch-orchestrator", "state": "fresh", "age_seconds": 2700},
+    {"environment_id": "vision-workbench", "state": "fresh", "age_seconds": 2200}
+  ],
+  "leases": [],
+  "reservations": [],
+  "catalog_digest": "sha256:fd936c7dcb62242c2fd8e6d452b8b209b79ab9096213d9dc5bb8a4f1cb8ed2af",
+  "binding_digest": "sha256:6e2cb722b9aca94bcc0a574999036f216b88fc467897275491801d749037afb5"
+}

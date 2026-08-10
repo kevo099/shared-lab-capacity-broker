@@ -1,0 +1,52 @@
+# Python bytecode, environments, and tooling
+__pycache__/
+*.py[cod]
+*.egg-info/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+.mypy_cache/
+.nox/
+.pytest_cache/
+.pyright/
+.ruff_cache/
+.tox/
+.venv/
+venv/
+.python-version
+
+# Build and local release output
+build/
+dist/
+wheelhouse/
+REVISION
+
+# Editors and operating systems
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# Runtime state and diagnostic output
+*.log
+*.pid
+*.sock
+*.sqlite
+*.sqlite3
+live-snapshot.json
+live-evidence.json
+
+# Real bindings, credentials, and certificate material are never repository data.
+bindings/private/
+config/private/
+*.env
+*.env.*
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt

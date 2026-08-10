@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:shared-lab-capacity-broker:live-probe-config:v1",
+  "title": "Private read-only evidence probe configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "task_history_limit",
+    "broker_status_socket",
+    "networks",
+    "controllers",
+    "backup_maximum_age_seconds",
+    "broker_lab_owners"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "task_history_limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 256
+    },
+    "broker_status_socket": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 512,
+      "pattern": "^/"
+    },
+    "networks": {
+      "type": "array",
+      "maxItems": 128,
+      "items": {"$ref": "#/$defs/network"}
+    },
+    "controllers": {
+      "type": "array",
+      "maxItems": 128,
+      "items": {"$ref": "#/$defs/controller"}
+    },
+    "backup_maximum_age_seconds": {
+      "type": "object",
+      "maxProperties": 128,
+      "propertyNames": {"$ref": "#/$defs/semanticId"},
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 60,
+        "maximum": 2678400
+      }
+    },
+    "broker_lab_owners": {
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 128,
+      "propertyNames": {"$ref": "#/$defs/semanticId"},
+      "additionalProperties": {"$ref": "#/$defs/semanticId"}
+    }
+  },
+  "$defs": {
+    "semanticId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,63}$"
+    },
+    "sourceName": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+    },
+    "network": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["alias", "source_vnet"],
+      "properties": {
+        "alias": {"$ref": "#/$defs/semanticId"},
+        "source_vnet": {"$ref": "#/$defs/sourceName"}
+      }
+    },
+    "controller": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "alias",
+        "pve_guest_aliases",
+        "require_exam_broker",
+        "implemented"
+      ],
+      "properties": {
+        "alias": {"$ref": "#/$defs/semanticId"},
+        "pve_guest_aliases": {
+          "type": "array",
+          "maxItems": 16,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/semanticId"}
+        },
+        "require_exam_broker": {"type": "boolean"},
+        "implemented": {"type": "boolean"}
+      }
+    }
+  }
+}
