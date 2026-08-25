@@ -27,10 +27,10 @@ classifiers = [
 test = ["jsonschema==4.25.1"]
 
 [project.urls]
-Homepage = "https://github.com/AoS-ssb/shared-lab-capacity-broker"
-Source = "https://github.com/AoS-ssb/shared-lab-capacity-broker"
-Issues = "https://github.com/AoS-ssb/shared-lab-capacity-broker/issues"
-"Private vulnerability reporting" = "https://github.com/AoS-ssb/shared-lab-capacity-broker/security/advisories/new"
+Homepage = "https://github.com/kevo099/shared-lab-capacity-broker"
+Source = "https://github.com/kevo099/shared-lab-capacity-broker"
+Issues = "https://github.com/kevo099/shared-lab-capacity-broker/issues"
+"Private vulnerability reporting" = "https://github.com/kevo099/shared-lab-capacity-broker/security/advisories/new"
 
 [project.scripts]
 lab-broker = "lab_broker.cli:main"
