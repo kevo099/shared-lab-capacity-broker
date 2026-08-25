@@ -24,7 +24,7 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-test = ["jsonschema==4.25.1"]
+test = ["jsonschema==4.26.0"]
 
 [project.urls]
 Homepage = "https://github.com/kevo099/shared-lab-capacity-broker"
