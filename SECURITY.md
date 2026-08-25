@@ -7,7 +7,7 @@ latest revision only.
 
 ## Report privately
 
-Use [GitHub private vulnerability reporting](https://github.com/AoS-ssb/shared-lab-capacity-broker/security/advisories/new).
+Use [GitHub private vulnerability reporting](https://github.com/kevo099/shared-lab-capacity-broker/security/advisories/new).
 Do not post a credential, private topology, personal data, or a working exploit
 in a public issue. Include the affected revision, impact, and a minimal
 reproduction using fictional data.

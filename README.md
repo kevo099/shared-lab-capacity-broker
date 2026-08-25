@@ -167,5 +167,5 @@ not affiliated with or endorsed by infrastructure or certification vendors;
 see [NOTICE.md](NOTICE.md).
 
 Report security issues privately through
-[GitHub's private vulnerability form](https://github.com/AoS-ssb/shared-lab-capacity-broker/security/advisories/new),
+[GitHub's private vulnerability form](https://github.com/kevo099/shared-lab-capacity-broker/security/advisories/new),
 not a public issue.
