@@ -46,9 +46,14 @@ The fictional fixture produces this matrix:
 
 ## Install and run
 
-Python 3.12 through 3.14 is supported.
+Python 3.12 through 3.14 is supported. Clone the repository and install into a
+virtual environment so the commands below use this project's own dependencies:
 
 ```bash
+git clone https://github.com/kevo099/shared-lab-capacity-broker.git
+cd shared-lab-capacity-broker
+python3 -m venv .venv
+. .venv/bin/activate
 python3 -m pip install .
 lab-broker overview
 lab-broker plan security-range
@@ -100,6 +105,30 @@ short or oversized bodies, and arbitrary identifiers are rejected.
 Accepted HTTP sockets use a ten-second timeout for each blocking I/O operation;
 this is not a total request deadline. Credential-side bounded read loops apply
 their separately documented monotonic wall-clock limits.
+
+## Understand a plan
+
+A plan compares the requested lab with one evidence snapshot and the reviewed
+catalog. Its outcome explains what the inputs support:
+
+| Outcome | Meaning |
+|---|---|
+| `safe_now` | The required gates and configured-memory capacity check pass. |
+| `safe_with_donors` | Capacity fits only if the listed reviewed donor workloads release their resources. |
+| `queued_exclusivity` | Another exam lease holds the shared exam slot; no queue is persisted. |
+| `blocked` | A known prerequisite, lifecycle state, conflict, or capacity check prevents this start. |
+| `unknown` | Missing, stale, inconsistent, or otherwise insufficient evidence prevents a decision. |
+| `already_active` | The exact cohort is already running under this environment's ownership. |
+
+**Configured memory** counts what running guests may use at their configured
+maximum. **Observed memory** describes current availability and is diagnostic:
+idle guests may consume more later. A positive observed headroom therefore
+cannot override a configured-memory shortfall. Both calculations keep host
+reserves and commitments aside; [DESIGN.md](DESIGN.md#planner) gives the formulas.
+
+The result includes the source digests and a `valid_until` timestamp. It neither
+holds capacity nor starts a workload: changes to the inputs require a new plan
+and the deployment owner's normal admission procedure.
 
 ## Live read-only mode
 
